@@ -11,13 +11,24 @@
 </head>
 
 <style>
+    .error{
+        color: red;
+        grid-column: 1;
+    }
     .scrollabletextbox {
         height:100px;
         width:200px;
         font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
         font-size: 82%;
         overflow:scroll;
+        grid-column: 1;
     }
+
+    .col1 {
+      grid-column: 1;
+    }
+
+
 </style>
 
 
@@ -25,25 +36,29 @@
 
     <h1>Serial Plotter</h1>
 
-    <label for="serial-ports">Select Serial Port:</label>
+    <div class="col1">
+        <label for="serial-ports">Select Serial Port:</label>
 
-    <select name="serial-ports" id="serial-ports">
-    </select>
+        <select name="serial-ports" id="serial-ports">
+        </select>
 
-    <input type="button" value="Connect" onclick="connect()">
+        <input type="button" value="Connect" onclick="connect()">
+    </div>
 
-    <div id="error"></div>
-    <div id="ports"></div>
+    <div id="error" class="error"></div>
 
-    <div>
+    <div class="col1">
         <textarea class="scrollabletextbox" name="terminal_text_box" id="terminal_text_box" readonly="true"></textarea>
     </div>
-    <div>
+    <div class="col1">
         <label for="autoscroll_check">Autoscroll</label>
         <input type="checkbox" id="autoscroll_check" name="autoscroll_check">
     </div>
+    <div id="live-plot" class="col1"></div>
 </body>
 
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="./renderer.js"></script>
 
 </html>

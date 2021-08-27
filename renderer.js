@@ -2,6 +2,7 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 
+const { contextBridge } = require('electron');
 const SerialPort = require('serialport');
 const serialport = require('serialport');
 const tableify = require('tableify');
@@ -53,13 +54,98 @@ async function listSerialPorts() {
 };
 
 
+Plotly.plot('live-plot', [{
+  y: [],
+  mode: 'lines',
+  line: {color: '#80CAF6'}
+}]);
+
+
+// Format of the data:
+// For one data point:
+// [<label>:] value [, [<label>:] <value>, ... ] \n
+
+var data_buff = ""
+
+var y_vals_buff = [[]]
+
+var lastSec = 0;
+
+function plot_data(new_data) {
+  var curr_idx = data_buff.length;
+
+  data_buff = data_buff + new_data;
+
+  var nl_idx = data_buff.indexOf('\n');
+
+  if (nl_idx >= 0){
+    data_point_string = data_buff.substring(0, nl_idx);
+
+    data_buff = data_buff.substring(nl_idx + 1);
+
+    // replace \r with spaces for compatability
+    data_point_string = data_point_string.replace(/\r/g, ' ');
+
+    values = data_point_string.split(',');
+
+    y_vals = []
+    y_labels = []
+
+    values.forEach(function(val_str, idx) {
+      let c_idx = val_str.indexOf(':');
+
+      var label = (idx + 1).toString();
+      var datum_string = "";
+
+      if (c_idx >= 0){
+        label = val_str.substring(0, c_idx);
+        datum_string = val_str.substring(c_idx + 1);
+      }else{
+        datum_string = val_str;
+      }
+
+      let datum_val = parseFloat(datum_string);
+
+      y_vals.push([datum_val]);
+
+      y_labels.push(label);
+
+      y_vals_buff[0].push(datum_val)
+
+      if (y_vals_buff[0].length > 1000){
+        y_vals_buff[0].shift()
+      }
+
+    });
+
+    let currentsec = (new Date()).valueOf();
+
+    if (currentsec > lastSec + 500){
+
+      Plotly.update('live-plot', {
+        y: y_vals_buff
+      }, [0]);
+
+      lastSec = currentsec;
+
+    }
+
+  }
+
+}
+
+
 const max_terminal_chars = 10000;
 var terminal_buffer = "";
 
 function recv_port_data(data) {
 
 
-  terminal_buffer = terminal_buffer + data.toString();
+  data_str = data.toString()
+
+  plot_data(data_str);
+
+  terminal_buffer = terminal_buffer + data_str;
 
   let extra = terminal_buffer.length - max_terminal_chars;
 
