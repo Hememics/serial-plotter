@@ -54,11 +54,16 @@ async function listSerialPorts() {
 };
 
 
-Plotly.plot('live-plot', [{
+var layout = {
+  showlegend: true
+}
+
+Plotly.newPlot('live-plot', [{
   y: [],
   mode: 'lines',
-  line: {color: '#80CAF6'}
-}]);
+  line: {color: '#80CAF6'},
+  name: "graph"
+}], layout);
 
 
 // Format of the data:
@@ -120,7 +125,7 @@ function plot_data(new_data) {
 
     let currentsec = (new Date()).valueOf();
 
-    if (currentsec > lastSec + 500){
+    if (currentsec > lastSec + 400){
 
       Plotly.update('live-plot', {
         y: y_vals_buff
