@@ -1,7 +1,7 @@
 {
-    "name": "electron-serialport",
-    "version": "1.0.2",
-    "description": "A minimal Electron application with node serialport",
+    "name": "serial-plotter",
+    "version": "0.0.2",
+    "description": "An Electron application for plotting serial data",
     "main": "main.js",
     "scripts": {
         "start": "electron .",

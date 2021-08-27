@@ -10,13 +10,38 @@
     </style>
 </head>
 
+<style>
+    .scrollabletextbox {
+        height:100px;
+        width:200px;
+        font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+        font-size: 82%;
+        overflow:scroll;
+    }
+</style>
+
+
 <body>
+
     <h1>Serial Plotter</h1>
 
-    We are using Node.js <span id="node-version"></span>, Chromium <span id="chrome-version"></span>, Electron <span id="electron-version"></span>, and Serialport <span id="serialport-version"></span>
+    <label for="serial-ports">Select Serial Port:</label>
+
+    <select name="serial-ports" id="serial-ports">
+    </select>
+
+    <input type="button" value="Connect" onclick="connect()">
 
     <div id="error"></div>
     <div id="ports"></div>
+
+    <div>
+        <textarea class="scrollabletextbox" name="terminal_text_box" id="terminal_text_box" readonly="true"></textarea>
+    </div>
+    <div>
+        <label for="autoscroll_check">Autoscroll</label>
+        <input type="checkbox" id="autoscroll_check" name="autoscroll_check">
+    </div>
 </body>
 
 <script src="./renderer.js"></script>
